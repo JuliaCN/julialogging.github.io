@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>如何轮换日志文件 · JuliaLogging</title><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.039/juliamono-regular.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.11/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script><link href="../../assets/julialogging.css" rel="stylesheet" type="text/css"/><link href="../../assets/gruvbox-light-hard.css" rel="stylesheet" type="text/css"/><link href="../../assets/gruvbox-dark-hard.css" rel="stylesheet" type="text/css"/><link href="../../assets/favicon.ico" rel="icon" type="image/x-icon"/></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../../"><img src="../../assets/logo.svg" alt="JuliaLogging logo"/></a><div class="docs-package-name"><span class="docs-autofit"><a href="../../">JuliaLogging</a></span></div><form class="docs-search" action="../../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../../">Home</a></li><li><a class="tocitem" href="../../package-overview/">Logging 包概述</a></li><li><input class="collapse-toggle" id="menuitem-3" type="checkbox"/><label class="tocitem" for="menuitem-3"><span class="docs-label">教程</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../../tutorials/logging-basics/">Logging 基本用法</a></li><li><a class="tocitem" href="../../tutorials/working-with-loggers/">使用日志记录器</a></li><li><a class="tocitem" href="../../tutorials/implement-a-new-logger/">实现一个新的日志记录器</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-4" type="checkbox" checked/><label class="tocitem" for="menuitem-4"><span class="docs-label">How-to 指南</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../enable-debug/">如何启用 <code>@debug</code> 消息</a></li><li><a class="tocitem" href="../log-to-file/">如何记录日志到文件</a></li><li><a class="tocitem" href="../tee/">将消息发送到多个位置</a></li><li><a class="tocitem" href="../filter-messages/">如何过滤消息</a></li><li class="is-active"><a class="tocitem" href>如何轮换日志文件</a><ul class="internal"><li><a class="tocitem" href="#基于日期的日志轮换"><span>基于日期的日志轮换</span></a></li><li><a class="tocitem" href="#基于文件大小的日志轮换"><span>基于文件大小的日志轮换</span></a></li></ul></li></ul></li><li><input class="collapse-toggle" id="menuitem-5" type="checkbox"/><label class="tocitem" for="menuitem-5"><span class="docs-label">Reference</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../../reference/logcompose/">LogCompose.jl</a></li><li><a class="tocitem" href="../../reference/logging/">Logging.jl</a></li><li><a class="tocitem" href="../../reference/logging2/">Logging2.jl</a></li><li><a class="tocitem" href="../../reference/loggingextras/">LoggingExtras.jl</a></li><li><a class="tocitem" href="../../reference/loggingformats/">LoggingFormats.jl</a></li><li><a class="tocitem" href="../../reference/logroller/">LogRoller.jl</a></li><li><a class="tocitem" href="../../reference/lokilogger/">LokiLogger.jl</a></li><li><a class="tocitem" href="../../reference/progresslogging/">ProgressLogging.jl</a></li><li><a class="tocitem" href="../../reference/sysloglogging/">SyslogLogging.jl</a></li><li><a class="tocitem" href="../../reference/terminalloggers/">TerminalLoggers.jl</a></li><li><a class="tocitem" href="../../reference/miniloggers/">MiniLoggers.jl</a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">How-to 指南</a></li><li class="is-active"><a href>如何轮换日志文件</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>如何轮换日志文件</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/ioxera/julialogging.github.io/blob/master/src/how-to/rotate-log-files.md" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="How-to-rotate-log-files"><a class="docs-heading-anchor" href="#How-to-rotate-log-files">如何轮换日志文件</a><a id="How-to-rotate-log-files-1"></a><a class="docs-heading-anchor-permalink" href="#How-to-rotate-log-files" title="Permalink"></a></h1><p><em>日志轮换</em>对于长时间运行的应用程序很常见，例如网络服务器，请参见 <a href="https://linux.die.net/man/8/logrotate"><code>logrotate</code></a> 的 Linux 系统示例。日志轮换意味着根据某种标准替换日志文件。通常日志文件根据日期轮换，例如每天或每周，或根据文件大小轮换，例如将单个文件保持在 10MB 以下。</p><h2 id="基于日期的日志轮换"><a class="docs-heading-anchor" href="#基于日期的日志轮换">基于日期的日志轮换</a><a id="基于日期的日志轮换-1"></a><a class="docs-heading-anchor-permalink" href="#基于日期的日志轮换" title="Permalink"></a></h2><p><a href="../../reference/loggingextras/#LoggingExtras.jl">LoggingExtras.jl</a> 包实现了 <a href="../../reference/loggingextras/#LoggingExtras.DatetimeRotatingFileLogger"><code>DatetimeRotatingFileLogger</code></a>，顾名思义，它是一个基于日期/时间的日志轮换记录器。日志轮换的频率是根据日期格式（请参阅 <a href="https://docs.julialang.org/en/v1/stdlib/Dates/#Dates.DateFormat"><code>Dates.DateFormat</code></a> 和 <a href="https://docs.julialang.org/en/v1/stdlib/Dates/#Dates.@dateformat_str"><code>dateformat&quot;...&quot;</code></a>）形式的输入文件名模式确定的。</p><p>让我们看一个初始示例：</p><pre><code class="language-julia hljs"><span class="hljs-keyword">using</span> Logging, LoggingExtras
+
+<span class="hljs-comment"># Directory for our log files</span>
+logdir <span class="hljs-keyword">=</span> <span class="hljs-built_in">joinpath</span>(<span class="hljs-meta">@__DIR__</span>, <span class="hljs-string">&quot;logs&quot;</span>)
+<span class="hljs-built_in">mkpath</span>(logdir)
+
+<span class="hljs-comment"># Filename pattern (see note below about character escaping)</span>
+filename_pattern <span class="hljs-keyword">=</span> <span class="hljs-string">raw&quot;yyyy-mm-dd-\w\e\b\s\e\r\v\e\r.\l\o\g&quot;</span>
+
+<span class="hljs-comment"># Create the logger</span>
+logger <span class="hljs-keyword">=</span> <span class="hljs-built_in">DatetimeRotatingFileLogger</span>(logdir, filename_pattern)
+
+<span class="hljs-comment"># Install the logger globally</span>
+<span class="hljs-built_in">global_logger</span>(logger)
+</code></pre><p>这是一个每天轮换日志文件的记录器，因为“天”是文件名模式中最小的日期时间单位。</p><div class="admonition is-info"><header class="admonition-header">Note</header><div class="admonition-body"><p>请注意，文件名模式中不属于日期时间模式的所有字符都将被转义。如果没有转义，这些字符也将被 <a href="https://docs.julialang.org/en/v1/stdlib/Dates/#Dates.DateFormat"><code>Dates.DateFormat</code></a> 解释。从技术上讲，并非所有字符都需要转义，例如 <code>w</code> 没有意义，但像上面的示例一样转义所有字符是最安全的。</p></div></div><p>经过几天的日志记录，我们会在日志目录中找到以下文件：</p><pre><code class="language-bash hljs">$ ls logs/
+2021-11-12-webserver.log
+2021-11-13-webserver.log
+2021-11-14-webserver.log
+2021-11-15-webserver.log</code></pre><hr/><p>现在让我们通过添加两个 <code>logrotate</code> 中的常用的功能来改进记录器：文件压缩和文件保留策略。日志文件通常是可压缩的，添加压缩可以为我们节省一些空间。文件保留策略让我们将日志文件保留固定天数，例如 30 天，然后自动删除它们。对压缩和保留策略的支持不是内置的，但我们可以使用外部包来实现这些目的，并在回调函数中使用 <code>rotation_callback</code> 关键字参数实现此功能。<code>DatetimeRotatingFileLogger</code> 每次轮换日志文件时都会调用此函数。该函数的唯一参数是“旧”文件。</p><p>我们将通过 <code>Gzip_jll</code> 包使用 <code>gzip</code> 压缩，：</p><pre><code class="language-julia hljs"><span class="hljs-keyword">using</span> Gzip_jll
+
+<span class="hljs-keyword">function </span><span class="hljs-title">logger_callback</span>(<span class="hljs-params">file</span>)
+    <span class="hljs-comment"># Compress the file</span>
+    Gzip_jll<span class="hljs-built_in">.</span><span class="hljs-built_in">gzip</span>() <span class="hljs-keyword">do</span> gzip
+        <span class="hljs-built_in">run</span>(<span class="hljs-string">`<span class="hljs-subst">$(gzip)</span> <span class="hljs-subst">$(file)</span>`</span>)
+    <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span>
+</code></pre><p>对于文件保留策略，我们将使用 <a href="https://github.com/staticfloat/FilesystemDatastructures.jl">FilesystemDatastructures</a> 包中的 <code>NFileCache</code>。这里我们创建了一个可以保存 30 个文件的文件缓存，：</p><pre><code class="language-julia hljs"><span class="hljs-keyword">using</span> FilesystemDatastructures
+
+<span class="hljs-comment"># Create a file cache that keeps 30 files</span>
+fc <span class="hljs-keyword">=</span> <span class="hljs-built_in">NFileCache</span>(logdir, <span class="hljs-number">30</span>, <span class="hljs-built_in">DiscardLRU</span>();
+                <span class="hljs-comment"># Make sure only files ending with &quot;webserver.log.gz&quot; are included</span>
+                predicate <span class="hljs-keyword">=</span> x <span class="hljs-built_in">-&gt;</span> <span class="hljs-built_in">endswith</span>(x, <span class="hljs-regexp">r&quot;webserver\.log\.gz&quot;</span>)
+)
+</code></pre><p>现在我们只需要修改上面的回调，将轮换和压缩的文件添加到缓存中：</p><pre><code class="language-julia hljs"><span class="hljs-keyword">function </span><span class="hljs-title">logger_callback</span>(<span class="hljs-params">file</span>)
+    <span class="hljs-comment"># Compress the file</span>
+    Gzip_jll<span class="hljs-built_in">.</span><span class="hljs-built_in">gzip</span>() <span class="hljs-keyword">do</span> gzip
+        <span class="hljs-built_in">run</span>(<span class="hljs-string">`<span class="hljs-subst">$(gzip)</span> <span class="hljs-subst">$(file)</span>`</span>)
+    <span class="hljs-keyword">end</span>
+    <span class="hljs-comment"># Add the compressed file to the cache (gzip adds the .gz extension)</span>
+    FilesystemDatastructures<span class="hljs-built_in">.</span><span class="hljs-built_in">add!</span>(fc, file <span class="hljs-built_in">*</span> <span class="hljs-string">&quot;.gz&quot;</span>)
+<span class="hljs-keyword">end</span>
+</code></pre><p>当第 31 个文件添加到缓存中时，将自动删除最旧的文件来为新文件腾出空间。让应用程序运行一段时间后检查日志目录：</p><pre><code class="language-bash hljs">$ ls logs/
+2021-11-20-webserver.log.gz
+2021-11-21-webserver.log.gz
+2021-11-22-webserver.log.gz
+[...]
+2021-12-17-webserver.log.gz
+2021-12-18-webserver.log.gz
+2021-12-19-webserver.log.gz
+2021-12-20-webserver.log</code></pre><p>30 个压缩文件，由缓存管理，还有一个“活动”文件尚未压缩并添加到缓存中。</p><hr/><p>这是完整示例：</p><pre><code class="language-julia hljs"><span class="hljs-keyword">using</span> Logging, LoggingExtras, Gzip_jll, FilesystemDatastructures
+
+<span class="hljs-comment"># Directory for our log files</span>
+logdir <span class="hljs-keyword">=</span> <span class="hljs-built_in">joinpath</span>(<span class="hljs-meta">@__DIR__</span>, <span class="hljs-string">&quot;logs&quot;</span>)
+<span class="hljs-built_in">mkpath</span>(logdir)
+
+<span class="hljs-comment"># Filename pattern</span>
+filename_pattern <span class="hljs-keyword">=</span> <span class="hljs-string">raw&quot;yyyy-mm-dd-\w\e\b\s\e\r\v\e\r.\l\o\g&quot;</span>
+
+<span class="hljs-comment"># File cache that keeps 30 files</span>
+fc <span class="hljs-keyword">=</span> <span class="hljs-built_in">NFileCache</span>(logdir, <span class="hljs-number">30</span>, <span class="hljs-built_in">DiscardLRU</span>();
+                <span class="hljs-comment"># Make sure only files ending with &quot;webserver.log.gz&quot; are included</span>
+                predicate <span class="hljs-keyword">=</span> x <span class="hljs-built_in">-&gt;</span> <span class="hljs-built_in">endswith</span>(x, <span class="hljs-regexp">r&quot;webserver\.log\.gz&quot;</span>)
+)
+
+<span class="hljs-comment"># Callback function for compression and adding to cache</span>
+<span class="hljs-keyword">function </span><span class="hljs-title">logger_callback</span>(<span class="hljs-params">file</span>)
+    <span class="hljs-comment"># Compress the file</span>
+    Gzip_jll<span class="hljs-built_in">.</span><span class="hljs-built_in">gzip</span>() <span class="hljs-keyword">do</span> gzip
+        <span class="hljs-built_in">run</span>(<span class="hljs-string">`<span class="hljs-subst">$(gzip)</span> <span class="hljs-subst">$(file)</span>`</span>)
+    <span class="hljs-keyword">end</span>
+    <span class="hljs-comment"># Add the compressed file to the cache (gzip adds the .gz extension)</span>
+    FilesystemDatastructures<span class="hljs-built_in">.</span><span class="hljs-built_in">add!</span>(fc, file <span class="hljs-built_in">*</span> <span class="hljs-string">&quot;.gz&quot;</span>)
+<span class="hljs-keyword">end</span>
+
+<span class="hljs-comment"># Create the logger</span>
+logger <span class="hljs-keyword">=</span> <span class="hljs-built_in">DatetimeRotatingFileLogger</span>(
+             logdir, filename_pattern;
+             rotation_callback <span class="hljs-keyword">=</span> logger_callback,
+)
+
+<span class="hljs-comment"># Install the logger globally</span>
+<span class="hljs-built_in">global_logger</span>(logger)
+</code></pre><div class="admonition is-info"><header class="admonition-header">Note</header><div class="admonition-body"><p>上面的设置与 Julia 的包服务器使用的日志记录设置非常相似，请参阅 <a href="https://github.com/JuliaPackaging/PkgServer.jl/blob/72e3f280ac0f91d9ded17f23920f0aa3e2a28a89/bin/run_server.jl#L24-L53">JuliaPackaging/PkgServer.jl:bin/run_server.jl</a>。</p></div></div><h2 id="基于文件大小的日志轮换"><a class="docs-heading-anchor" href="#基于文件大小的日志轮换">基于文件大小的日志轮换</a><a id="基于文件大小的日志轮换-1"></a><a class="docs-heading-anchor-permalink" href="#基于文件大小的日志轮换" title="Permalink"></a></h2><p>对于基于文件大小的轮换，例如当文件大小达到特定阈值时进行文件轮换，请查看 <a href="../../reference/logroller/#LogRoller.jl">LogRoller.jl</a> 包。</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../filter-messages/">« 如何过滤消息</a><a class="docs-footer-nextpage" href="../../reference/logcompose/">LogCompose.jl »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.15 on <span class="colophon-date" title="Wednesday 7 December 2022 19:17">Wednesday 7 December 2022</span>. Using Julia version 1.7.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
