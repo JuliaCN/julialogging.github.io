@@ -1,20 +1,12 @@
-# How to rotate log files
+# [如何轮换日志文件](@id How-to-rotate-log-files)
 
-*Log rotation* is common for long running applications such as e.g. a webserver,
-see for example [`logrotate`](https://linux.die.net/man/8/logrotate) for Linux systems.
-Log rotation means that the logfile is swapped according to some criterion. Usually a
-logfile is rotated based on the date, for example daily or weekly, or based on file size,
-for example to keep the individual files below 10MB.
+*日志轮换*对于长时间运行的应用程序很常见，例如网络服务器，请参见 [`logrotate`](https://linux.die.net/man/8/logrotate) 的 Linux 系统示例。日志轮换意味着根据某种标准替换日志文件。通常日志文件根据日期轮换，例如每天或每周，或根据文件大小轮换，例如将单个文件保持在 10MB 以下。
 
-## Date based log rotation
+## 基于日期的日志轮换
 
-The [LoggingExtras.jl](@ref) package implements the [`DatetimeRotatingFileLogger`]
-(@ref LoggingExtras.DatetimeRotatingFileLogger) which, as the name suggests, is a logger
-for date/time based log rotation. The frequency of log rotation is determined based
-on the input filename pattern in the form of a dateformat (see documentation for [`Dates.DateFormat`](https://docs.julialang.org/en/v1/stdlib/Dates/#Dates.DateFormat) and
-[`dateformat"..."`](https://docs.julialang.org/en/v1/stdlib/Dates/#Dates.@dateformat_str)).
+[LoggingExtras.jl](@ref) 包实现了 [`DatetimeRotatingFileLogger`](@ref LoggingExtras.DatetimeRotatingFileLogger)，顾名思义，它是一个基于日期/时间的日志轮换记录器。日志轮换的频率是根据日期格式（请参阅 [`Dates.DateFormat`](https://docs.julialang.org/en/v1/stdlib/Dates/#Dates.DateFormat) 和 [`dateformat"..."`](https://docs.julialang.org/en/v1/stdlib/Dates/#Dates.@dateformat_str)）形式的输入文件名模式确定的。
 
-Let's look at an initial example:
+让我们看一个初始示例：
 
 ```@example datetime-rotate
 using Logging, LoggingExtras
@@ -37,18 +29,12 @@ global_logger(old_global_logger) # hide
 rm(logdir; recursive=true, force=true) # hide
 ```
 
-This is a logger that will rotate the log file every day, since "day" is the smallest
-datetime unit in the filename pattern.
+这是一个每天轮换日志文件的记录器，因为“天”是文件名模式中最小的日期时间单位。
 
 !!! note
-    Note that all characters in the filename pattern that should not be part of of the
-    datetime pattern are escaped. Without this these characters would also be interpreted by
-    [`Dates.DateFormat`](https://docs.julialang.org/en/v1/stdlib/Dates/#Dates.DateFormat).
-    Technically not all characters need to be escaped, for example `w` doesn't have a
-    meaning, but it is safest to escape all characters like in the example above.
+    请注意，文件名模式中不属于日期时间模式的所有字符都将被转义。如果没有转义，这些字符也将被 [`Dates.DateFormat`](https://docs.julialang.org/en/v1/stdlib/Dates/#Dates.DateFormat) 解释。从技术上讲，并非所有字符都需要转义，例如 `w` 没有意义，但像上面的示例一样转义所有字符是最安全的。
 
-Eventually, after some days of logging, we would end up with the following files in our log
-directory:
+经过几天的日志记录，我们会在日志目录中找到以下文件：
 
 ```bash
 $ ls logs/
@@ -60,17 +46,9 @@ $ ls logs/
 
 ---
 
-Let's now improve the logger by adding two features that are commonly used in `logrotate`:
-file compression and file retention policy. Log files are usually quite compressible
-and adding compression could save us some space. A file retention policy let us keep log
-files for a fixed number of days, for example 30, and then automatically delete them.
-Support for compression and retention policies are not built-in, but there are external
-packages that we can use for these purposes and implement this functionality in a callback
-function using the `rotation_callback` keyword argument. The `DatetimeRotatingFileLogger`
-calls this function every time it rotates the log file. The only argument to the function
-is the "old" file.
+现在让我们通过添加两个 `logrotate` 中的常用的功能来改进记录器：文件压缩和文件保留策略。日志文件通常是可压缩的，添加压缩可以为我们节省一些空间。文件保留策略让我们将日志文件保留固定天数，例如 30 天，然后自动删除它们。对压缩和保留策略的支持不是内置的，但我们可以使用外部包来实现这些目的，并在回调函数中使用 `rotation_callback` 关键字参数实现此功能。`DatetimeRotatingFileLogger` 每次轮换日志文件时都会调用此函数。该函数的唯一参数是“旧”文件。
 
-For compression we will use `gzip`, through `Gzip_jll`:
+我们将通过 `Gzip_jll` 包使用 `gzip` 压缩，：
 
 ```@example datetime-rotate
 using Gzip_jll
@@ -83,10 +61,7 @@ function logger_callback(file)
 end
 nothing # hide
 ```
-
-For the file retention policy we will use an `NFileCache` from the
-[FilesystemDatastructures](https://github.com/staticfloat/FilesystemDatastructures.jl)
-package. Here we create a file cache that keeps 30 files:
+对于文件保留策略，我们将使用 [FilesystemDatastructures](https://github.com/staticfloat/FilesystemDatastructures.jl) 包中的 `NFileCache`。这里我们创建了一个可以保存 30 个文件的文件缓存，：
 
 ```@example datetime-rotate
 using FilesystemDatastructures
@@ -99,8 +74,7 @@ fc = NFileCache(logdir, 30, DiscardLRU();
 nothing # hide
 ```
 
-Now we just have to modify the callback above to add rotated and compressed files to the
-cache:
+现在我们只需要修改上面的回调，将轮换和压缩的文件添加到缓存中：
 
 ```@example datetime-rotate
 function logger_callback(file)
@@ -114,9 +88,7 @@ end
 nothing # hide
 ```
 
-When the 31th file is added to the cache the oldest file will automatically be deleted to
-make room for the new file.
-Inspecting the log directory after letting the application run for some time gives us:
+当第 31 个文件添加到缓存中时，将自动删除最旧的文件来为新文件腾出空间。让应用程序运行一段时间后检查日志目录：
 
 ```bash
 $ ls logs/
@@ -130,12 +102,12 @@ $ ls logs/
 2021-12-20-webserver.log
 ```
 
-30 compressed files, managed by the cache, and one "active" file yet to be compressed
-and added to the cache.
+30 个压缩文件，由缓存管理，还有一个“活动”文件尚未压缩并添加到缓存中。
 
 ---
 
-Here is the complete example:
+这是完整示例：
+
 ```@example datetime-rotate-complete
 using Logging, LoggingExtras, Gzip_jll, FilesystemDatastructures
 
@@ -177,11 +149,8 @@ rm(logdir; recursive=true, force=true) # hide
 ```
 
 !!! note
-    The setup above is very similar to the logging setup used by Julia's package servers,
-    see [JuliaPackaging/PkgServer.jl:bin/run_server.jl]
-    (https://github.com/JuliaPackaging/PkgServer.jl/blob/72e3f280ac0f91d9ded17f23920f0aa3e2a28a89/bin/run_server.jl#L24-L53)
+    上面的设置与 Julia 的包服务器使用的日志记录设置非常相似，请参阅 [JuliaPackaging/PkgServer.jl:bin/run_server.jl](https://github.com/JuliaPackaging/PkgServer.jl/blob/72e3f280ac0f91d9ded17f23920f0aa3e2a28a89/bin/run_server.jl#L24-L53)。
 
-## Filesize based log rotation
+## 基于文件大小的日志轮换
 
-For filesize based rotation, e.g. file rotation when the filesize reaches a specific
-threshold, checkout the [LogRoller.jl](@ref) package.
+对于基于文件大小的轮换，例如当文件大小达到特定阈值时进行文件轮换，请查看 [LogRoller.jl](@ref) 包。

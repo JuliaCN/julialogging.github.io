@@ -1,18 +1,9 @@
-# Send messages to multiple locations
+# [将消息发送到多个位置](@id Send-messages-to-multiple-locations)
 
-In this tutorial we will see how log messages can be sent to multiple locations at the same
-time. In e.g. [Working with loggers](@ref) and [How to log to a file](@ref) we saw some
-alternative loggers ([`NullLogger`](@ref Logging.NullLogger),
-[`FileLogger`](@ref LoggingExtras.FileLogger), etc.) and how to use them. However, in
-those examples we made so that messages were sent only to the new logger.
-The [LoggingExtras.jl](@ref) package implement a logger for this purpose, the
-[`TeeLogger`](@ref LoggingExtras.TeeLogger). The name is inspired by the [shell utility
-`tee`](https://en.wikipedia.org/wiki/Tee_(command)) which writes command output to
-both standard out and a file.
+在本教程中，我们将了解如何将日志消息同时发送到多个位置。在[使用日志记录器](@ref Working-with-loggers)和[如何记录日志到文件](@ref How-to-log-to-a-file)中，我们看到了一些替代记录器（[`NullLogger`](@ref Logging.NullLogger)，[`FileLogger`](@ref LoggingExtras.FileLogger), 等）以及如何使用它们。但是，在这些示例中，我们仅将消息发送到新记录器。[LoggingExtras.jl](@ref) 包为此目的实现了一个记录器[`TeeLogger`](@ref LoggingExtras.TeeLogger)。该名称的灵感来自 [shell 工具
+`tee`](https://en.wikipedia.org/wiki/Tee_(command)) ，它将命令输出写入标准输出和文件。
 
-A very common logging setup is to write logs to both `stderr` (as the default logger does)
-*and* a file. Here is how we can do that using a `TeeLogger`, a `FileLogger`, and the
-default [`ConsoleLogger`](@ref Logging.ConsoleLogger):
+一个非常常见的日志记录设置是将日志写入 `stderr`（如默认记录器所做的那样）*和*一个文件。以下是我们如何使用 `TeeLogger`、`FileLogger`和 默认的 [`ConsoleLogger`](@ref Logging.ConsoleLogger)来做到这点：
 
 ```@example tee
 using Logging, LoggingExtras
@@ -25,18 +16,13 @@ logger = TeeLogger(
 nothing # hide
 ```
 
-When using this logger every message will be routed to *both* the default logger and
-to the file. Together with log message filtering it is possible to create arbitrary log
-message routing since all the loggers compose nicely and they can be nested.
-This is described more in [How to filter messages](@ref), but a short example of this
-is given below.
+使用此记录器时，每条消息都将*同时*路由到默认记录器和文件。与日志消息过滤一起，可以创建任意日志消息路由，因为所有记录器都很好地组合并且可以嵌套。这在[如何过滤消息](@ref How-to-filter-messages)中有更多描述，但下面给出了一个简短的例子。
 
-Here is a logger that writes messages to three loggers:
- - The default global logger (stderr),
- - A `MinLevelLogger` accepting any message with level >= `Info` and writing
-   them to a file `"logfile.log"` using a `FileLogger`,
- - A `MinLevelLogger` accepting any message with level >= `Debug` and writing
-   them to a file `"debug.log"` using a `FileLogger`.
+这是一个将消息写入下面三个记录器的记录器：
+
+  - 默认的全局记录器（stderr），
+  - `MinLevelLogger` 接受级别 >= `Info` 的任何消息，并使用 `FileLogger` 将它们写入文件 `"logfile.log"`，
+  - `MinLevelLogger` 接受级别 >= `Debug` 的任何消息，并使用 `FileLogger` 将它们写入文件 `"debug.log"`。
 
 ```@example tee2
 using Logging, LoggingExtras

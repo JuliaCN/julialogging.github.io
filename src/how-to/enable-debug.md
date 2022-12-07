@@ -1,11 +1,8 @@
-# How to enable `@debug` messages
+# [如何启用 `@debug` 消息](@id How-to-enable-debug-messages)
 
-By default log messages with the debug level (e.g. from `@debug`) are not visible. This is
-because the lowest log level accepted by the default `ConsoleLogger` is `Logging.Info` --
-anything below that will be discarded.
+默认 debug 级日志消息默认是不可见的。这是因为默认的 `ConsoleLogger` 接收的最低日志级别是 `Logging.Info` -- 任何比它低的都将被丢弃。
 
-The simplest way to enable all `@debug`-level messages is thus to create a new logger
-that accept also these messages. Here is an example of that:
+启用所有 `@debug` 级消息的最简单方式是，创建一个接收所有消息的新记录器。示例如下：
 
 ```@example enable-debug
 using Logging
@@ -15,8 +12,7 @@ debug_logger = ConsoleLogger(stderr, Logging.Debug)
 nothing # hide
 ```
 
-This new logger can now be used instead of the default one  either locally for a task, or
-globally, see [Working with loggers](@ref). Examples:
+新的记录器现在可以用于替代任务的本地记录器或全局记录器，请参考[使用日志记录器](@ref Working-with-loggers)。示例如下：
 
 ```@repl enable-debug
 begin # hide
@@ -37,15 +33,9 @@ with_logger(ConsoleLogger(stderr, Logging.Debug)) do # hide
 end # hide
 ```
 
-The method described above works for any logger that accept the log level as an argument,
-however, this is not always the case. An alternative, and more composable, way to enable
-debug messages is to use message filtering based on the log level. This is described
-in more detail in [How to filter messages](@ref), but an example with log level filtering
-is given here using a [`MinLevelLogger`](@ref LoggingExtras.MinLevelLogger).
+此方法适用于任何接收日志级别作为参数的日志记录器，然而，情况并非总是如此。启用 debug 消息的另一个更具组合性的选择是，使用基于日志级别的消息过滤，[如何过滤消息](@ref How-to-filter-messages)章节是这种方法的更详细描述，但是这里给出的日志级别过滤示例使用了 [`MinLevelLogger`](@ref LoggingExtras.MinLevelLogger)。
 
-`MinLevelLogger` is a logger that wraps another logger, but only let messages with high
-enough level pass through to the wrapped logger. In this example we wrap a
-`ConsoleLogger` that accept every message (`Logging.BelowMinLevel`).
+`MinLevelLogger` 记录器是另一个记录器的封装，但是只让足够高级别的消息传入给被封装的记录器。这个示例中，我们封装了一个接收每个消息级别（`Logging.BelowMinLevel`）的 `ConsoleLogger`。
 
 ```@example enable-debug2
 using Logging, LoggingExtras
@@ -62,18 +52,12 @@ end
 end # hide
 ```
 
+要选择性地启用来自某些模块或包的调试消息，或基于日志级别等事情进行过滤，请查看[如何过滤消息](@ref How-to-filter-messages)章节。
 To selectively enable debug messages from e.g. certain modules or packages, or filtering
 based on things other than the log level, see [How to filter messages](@ref).
 
-### `JULIA_DEBUG` environment variable
+### `JULIA_DEBUG` 环境变量
 
-Another "quick and dirty" way of enabling debug messages is to make use of the environment
-variable `JULIA_DEBUG` (see [Logging/Environmental variables]
-(https://docs.julialang.org/en/v1/stdlib/Logging/#Environment-variables)). This variable
-can be set to `all`, to enable all debug messages, or to one or more module
-names in a comma separated list, to selectively enable debug messages from certain
-modules. However, using `JULIA_DEBUG` does not compose as nicely as using proper log
-message filtering (see [How to filter messages](@ref)). See for example this issue for some
-more discussion and information:
-[JuliaLogging/LoggingExtras.jl#20](https://github.com/JuliaLogging/LoggingExtras.jl/issues/20)
-.
+另一个“快速又随性”地启用 debug 消息的方式是，使用`JULIA_DEBUG` (请查看 [Logging/Environmental variables]
+(https://docs.julialang.org/en/v1/stdlib/Logging/#Environment-variables))环境变量。此变量可以设置为 `all` 以启用所有调试消息，或设置为一个或多个以逗号分隔的模块名列表来选择性启用某些模块的调试消息。然而，使用 `JULIA_DEBUG` 组合的并不像使用适当的日志消息过滤那样好（请查看[如何过滤消息](@ref How-to-filter-messages)）。请查看此问题的示例以获取更多讨论和信息：
+[JuliaLogging/LoggingExtras.jl#20](https://github.com/JuliaLogging/LoggingExtras.jl/issues/20)。

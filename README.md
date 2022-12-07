@@ -1,3 +1,6 @@
+**!!! Note**
+This repository is unofficial and is only used for Chinese document translation.
+
 # julialogging.github.io
 
 JuliaLogging organization home page: [julialogging.github.io](https://julialogging.github.io).

@@ -1,27 +1,17 @@
-# Welcome to JuliaLogging!
+# 欢迎来到 JuliaLogging!
 
-This is the landing page of the
-[JuliaLogging GitHub organization](https://github.com/JuliaLogging/). JuliaLogging is an
-umbrella organization for logging-related packages and repositories in the
-[Julia programming language](https://julialang.org/) ecosystem.
+这是
+[JuliaLogging GitHub 组织](https://github.com/JuliaLogging/)的主页。 JuliaLogging 是[Julia 编程语言](https://julialang.org/)生态系统中和 logging 相关的软件包及源码库的一个伞状组织。
 
-The aim of this document is to be a "one-stop-shop" for everything related to logging in
-Julia. The document is structured as follows[^1]:
+此文档的目标是成为 Julia 中和 logging 相关的任何事的“一站式商店”。此文档按照如下结构组织[^1]：
 
- - _**Tutorials**_ will teach you the basics of Julia's logging system.
- - _**How-to guides**_ will guide you through the steps involved in addressing common tasks
-   and use-cases. They are more advanced than tutorials and assume some knowledge of Julia's
-   logging system.
- - _**Reference**_ contains technical reference of functions and APIs (e.g. the docstrings).
-   Use this when looking up details.
- - _**Background and discussion**_ covers some higher level topics.
+ - _**教程**_ 将会教你 Julia logging 系统的基本用法。
+ - _**How-to 指南**_ 将会指导你完成常见任务和用例所涉及的步骤。这比教程更高级，并且假设你已具备 Julia logging 系统的一些知识。
+ - _**参考**_ 包含函数和 API 的技术参考（例如 docstrings）。在查找详细信息时使用此参考。
+ - _**背景和讨论**_ 涵盖一些高级主题。
 
 !!! note
-    Please help improve this documentation -- if something confuses you, chances are you're
-    not alone. It's easy to do as you read along: just click on the "Edit on GitHub" link
-    at the top of each page, and then [edit the files directly in your browser]
-    (https://help.github.com/articles/editing-files-in-another-user-s-repository/).
-    Your changes will be vetted by developers before becoming permanent, so don't
-    worry about whether you might say something wrong.
+    请帮助改善此文档 -- 如果什么东西使你感到困惑，有可能不止你一个人。阅读时很容易做到：只需点击每个页面顶部的 “Edit on Github” 链接，然后[直接在你的浏览器中编辑文件](https://help.github.com/articles/editing-files-in-another-user-s-repository/)。你的修改在成为正式文档之前将会被开发人员审查，因此无需担心会说错什么。
+    （译注：请至[原文](https://julialogging.github.io/)编辑）。
 
-[^1]: The organization of the document follows the [Diátaxis Framework](https://diataxis.fr).
+[^1]: 文档的组织遵从 [Diátaxis 框架](https://diataxis.fr)。

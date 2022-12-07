@@ -34,12 +34,12 @@ makedocs(
     pages = [
         "Home" => "index.md",
         "package-overview.md",
-        "Tutorials" => [
+        "教程" => [
             "tutorials/logging-basics.md",
             "tutorials/working-with-loggers.md",
             "tutorials/implement-a-new-logger.md",
         ],
-        "How-to guides" => [
+        "How-to 指南" => [
             "how-to/enable-debug.md",
             "how-to/log-to-file.md",
             "how-to/tee.md",
@@ -96,6 +96,6 @@ withenv(env...) do
     deploydocs(
         versions = nothing,
         push_preview = true,
-        repo = "github.com/JuliaLogging/julialogging.github.io.git",
+        repo = "github.com/ioxera/julialogging.github.io.git",
     )
 end

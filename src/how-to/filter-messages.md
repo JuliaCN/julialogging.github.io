@@ -1,33 +1,19 @@
-# How to filter messages
+# [如何过滤消息](@id How-to-filter-messages)
 
-In this tutorial we will see how to filter messages based on the metadata (level, module,
-etc.) and the content of log messages. In [How to enable `@debug` messages](@ref) and
-[Send messages to multiple locations](@ref) there were examples of how to filter messages
-based on the log level, but not based on other things.
+在此教程中，我们将看到如何基于元数据（level, module等）和日志消息内容来过滤消息。在[如何启用 `@debug` 消息](@ref How-to-enable-debug-messages)和
+[发送消息到多个位置](@ref Send-messages-to-multiple-locations)中有如何基于日志级别过滤消息的示例。
 
-Messages can be filtered in two stages during the logging system message plumbing. In the
-first stage only the metadata is known (level, module, group, and id). In particular the
-message string itself has not been constructed yet. Filtering at this stage can be more
-efficient if the log message creation is expensive. For example, in
+在日志系统消息管道中，可以分两个阶段过滤消息。在第一阶段，只有元数据是已知的（level, module, group, 和 id）。特别是消息字符串本身尚未构建，如果创建日志消息的成本很高，则在此阶段进行过滤可能会更有效。例如，在
 ```julia
 @info "The value of some_expensive_call is: $(some_expensive_call(args...))"
 ```
-the call to `some_expensive_call` has not happened yet in the early stage.
-Messages can also be filtered later, when more information is available, such as the full
-message string, file and line, and any keyword arguments.
+中，在早期阶段还未发生对 `some_expensive_call` 的调用。当有更多信息可用时，例如完整的消息字符串、文件和行以及任何关键字参数，消息也可以稍后过滤。
 
+### 早期过滤使用 `EarlyFilteredLogger`
 
-### Early filtering using `EarlyFilteredLogger`
+可以使用 [LoggingExtras.jl](@ref) 包中的 [`EarlyFilteredLogger`](@ref LoggingExtras.EarlyFilteredLogger) 来完成早期阶段的过滤。`EarlyFilteredLogger` 需要一个谓词函数和一个记录器作为输入参数。如果谓词返回 `true`，则消息被传递给包装的记录器，否则被忽略。谓词函数的唯一输入是一个命名元组，请参阅 [`LoggingExtras.shouldlog_args`](@ref)。
 
-Filtering in the early stage can be done with an [`EarlyFilteredLogger`]
-(@ref LoggingExtras.EarlyFilteredLogger) from the [LoggingExtras.jl](@ref) package.
-The `EarlyFilteredLogger` takes a predicate function and a logger as input arguments.
-If the predicate returns `true` the message is passed on to the wrapped logger, otherwise
-it is ignored. The predicate function is passed a named tuple, see
-[`LoggingExtras.shouldlog_args`](@ref), as the only input.
-
-Here is an example of a logger that only accept (i) messages that are of `Logging.Info` level
-(`Logging.Info <= level < Logging.Warn`) and (ii) messages coming from the `Foo` module:
+这是一个记录器的示例，它只接受 (i)`Logging.Info` 级别（`Logging.Info <= level < Logging.Warn`）的消息和 (ii) 来自 `Foo` 模块的消息：
 
 ```@example filtering
 using Logging, LoggingExtras
@@ -57,15 +43,12 @@ end
 end # hide
 ```
 
-As you can see, the only message that wasn't dropped by the filter is the `@info` message
-from the `Foo` module!
+如您所见，唯一没有被过滤器丢弃的是来自 `Foo` 模块的 `@info` 消息！
 
 !!! note
-    The `MinLevelLogger` is just a special case of an `EarlyFilteredLogger` that only
-    checks that the log level of the message is higher than the configured one.
+    `MinLevelLogger` 只是 `EarlyFilteredLogger` 的一个特例，它只检查消息的日志级别是否高于配置的级别。
 
-Together with the [`TeeLogger`](@ref LoggingExtras.TeeLogger) we can now create arbitrary
-routing for the messages. Here is a more complicated example:
+和 [`TeeLogger`](@ref LoggingExtras.TeeLogger) 一起，我们现在可以为消息创建任意路由。这是一个更复杂的例子：
 
 ```@example filtering2
 using Logging, LoggingExtras
@@ -94,23 +77,11 @@ logger = TeeLogger(
 nothing # hide
 ```
 
-This logger send all messages to the current global logger and an `EarlyFilteredLogger`.
-The `EarlyFilteredLogger` then drops all messages that doesn't come from the module
-`WebServer` and send the remaining ones to a new `TeeLogger`. This `TeeLogger` send messages
-to three `EarlyFilteredLogger`s that only keep messages of a certain level and send those
-to `FileLogger`s corresponding to the level. This means that, in `"debug.log"` there will
-only be messages that come from `WebServer` (the first filter) and that have debug log
-level. Similarly, in `"info.log"` there will only be messages with info log level, and
-any messages with higher level (warn, error) will end up in `"warnings_and_errors.log"`.
+此记录器将所有消息发送到当前的全局记录器和 `EarlyFilteredLogger`. 然后 `EarlyFilteredLogger` 丢弃所有不是来自 `WebServer` 模块的消息，并将剩余的消息发送到新的 `TeeLogger`. 此`TeeLogger` 会将消息发送到三个 `EarlyFilteredLoggers`，它们只保留特定级别的消息并将这些消息发送到对应于该级别的 `FileLogger`。这意味着，`"debug.log"` 只有来自 `WebServer`（第一个过滤器）并且具有 debug 日志级别的消息。类似地， `"info.log"` 中只会有 info 日志级别的消息，任何更高级别（warn, error）的消息都将位于 `"warnings_and_errors.log"` 中。
 
-### Late filtering using `ActiveFilteredLogger`
+### 后期过滤使用 `ActiveFilteredLogger`
 
-In case of filtering based on level, module, group, and id is not enough it is possible
-to use an [`ActiveFilteredLogger`](@ref LoggingExtras.ActiveFilteredLogger), also from
-the [LoggingExtras.jl](@ref) package. This logger is similar to the `EarlyFilteredLogger`,
-with the only difference that the named tuple that the predicate functions is given
-contains more data, see [`LoggingExtras.handle_message_args`](@ref). Here is an example
-of a logger that filter based on the message string content:
+如果基于级别、模块、组和 id 的过滤不够，可以使用 [`ActiveFilteredLogger`](@ref LoggingExtras.ActiveFilteredLogger)，它也来自 [LoggingExtras.jl](@ref) 包。此记录器类似于 `EarlyFilteredLogger`，唯一的区别是传给谓词函数的命名元组包含更多数据，请参阅 [`LoggingExtras.handle_message_args`](@ref)。以下是根据消息字符串内容进行过滤的记录器示例：
 
 ```@example filtering3
 using Logging, LoggingExtras

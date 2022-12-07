@@ -1,28 +1,20 @@
-# Logging basics
+# [Logging 基本用法](@id Logging-basics)
 
-In this tutorial we will learn the basics of how to emit *log messages* or *log events*.
-We will also learn a bit about what information each message consists of and what happens
-after the log message is emitted. If you are writing a script or a package this section
-should cover everything you need.
+在此教程中，我们将学习发出*日志消息*和*日志事件*的基本用法。我们也会学习一点关于每条 log 消息由哪些信息组成以及当 log 消息发出后发生了什么。如果你要写一个脚本或者包，此章节应该覆盖了你需要的所有信息。
 
 !!! tip
-    It is a good idea to follow along by copy-pasting the code snippets into a Julia REPL!
+    跟随教程把代码片段复制粘贴到 Julia REPL 中执行，是个不错的注意！
 
-### Basic log events
+### 基本日志事件
 
-The most important information in a log event is the *log message* and the *log level*.
-The log message is usually an informative text string and the log level is a severity level
-indicating to the reader how important the log message is.
-Julia's `Base` module, which is available by default, provides the logging macros `@info`,
-`@warn`, `@error`, and `@debug` for creating log messages. These correspond to common log
-message levels:
+log 事件中大部分重要的信息是*日志消息*和*日志级别*。日志消息通常是一个信息量很大的文本字符串，日志级别是个严重性级别，用来向读者说明 log 消息的重要性。Julia的 `Base` 模块默认是可用的，它提供了日志宏 `@ingo`, `@warn`, `@error`,和 `@debug` 来创建日志消息。它们对应到常见的日志级别：
 
-- **Info**: useful information but nothing critical
-- **Warning**: information about something that might not be right
-- **Error**: information about something that went wrong
-- **Debug**: extra information useful when debugging
+- **Info**: 有用的信息但是一点也不严重
+- **Warning**: 一些某事可能不正确的信息
+- **Error**: 某事发生了错误的信息
+- **Debug**: 在调试时很有用的附加信息
 
-Let's look at how we can create some log messages using the macros mentioned above:
+让我们看看如何使用上面提到的宏创建一些日志消息：
 
 ```@repl
 @info "This is an info message, carry on as usual."
@@ -32,44 +24,30 @@ Let's look at how we can create some log messages using the macros mentioned abo
 printstyled("\njulia>"; color=:green, bold=true) # hide
 ```
 
-As you can see, for simple usage we only need the macro, which determines the log level,
-and the message string. The default logging backend, responsible for handling the
-log messages that we generate, prints a formatted, colored, message to the terminal as in
-the example above. The formatting is different depending on the log level: `@info`-messages
-don't print out location info (module, file, line number) like `@warn`- and `@error`-
-messages does. You can also note that `@debug`-messages are off by default. Typically you
-would only turn on those when you need more information such as when debugging an issue
-with your code.
+正如你看到的，简单的用法只需要宏，它确定了日志级别和消息字符串。默认的日志后端负责处理我们生成的日志消息，像上面示例展示的一样打印已格式化，色彩化的消息到终端。格式默认是由日志级别决定的： `@info` 消息不输出像 `@warn` 和 `@error` 一样的位置信息（模块，文件，行号）。你也可以注意到 `@debug` 消息默认情况下是关闭的。通常在你调试代码中的问题需要更多信息时，才需要开启它们。
 
 
-### Adding extra metadata to the log event
+### 向日志事件添加额外元数据
 
-In the examples above the only information we passed to the logging macros where the log
-message string. It is possible to pass along more information by attaching additional
-things after the message string. Extra information can be added using `key = value` syntax
-like this:
+在上述示例中，我们传给日志宏的唯一信息是日志消息字符串。可以通过在消息字符串后面附加额外事物来传递更多信息。额外信息可以使用 `key = value` 语法添加：
 
 ```@repl
 @info "hello, world" x = [1, 2, 3] y = "something else"
 ```
 
-or by just attaching a variable like this:
+或者仅附加一个变量:
 
 ```@repl
 x = [3, 4, 5];
 @info "hello, world" x
 ```
 
-In both cases you can see that the logging backend formatted the extra information nicely
-below the log message string. Adding extra information can be useful in many cases, and in
-particular if you want to keep the message string constant while still passing some dynamic
-information.
+在这两个示例中，你可以看打日志后端很好的格式化了日志消息字符串后面的额外信息。添加额外信息在一些情况下是很有用的，特别是如果你想保持消息字符串不变，只传递一些动态信息。
 
 
-### Log levels
+### 日志级别
 
-The four logging levels `Info`, `Warn`, `Error`, and `Debug` are just aliases for specific
-numeric levels on the allowed log level range as you can see in the table below:
+四个日志级别 `Info`, `Warn`, `Error`, 和 `Debug` 只是特定数字级别的别名，允许的日志级别范围正如你在下表看到的：
 
 | Level    | Alias                   | Comment                         |
 |:--------:|:------------------------|:--------------------------------|
@@ -80,10 +58,7 @@ numeric levels on the allowed log level range as you can see in the table below:
 | 2000     | `Logging.Error`         | log level for `@error` messages |
 | 1000001  | `Logging.AboveMaxLevel` | (above) highest possible level  |
 
-The Logging module, which comes with Julia, provides the [`@logmsg`](@ref Logging.@logmsg)
-macro, which is a generalization of the other macros mentioned so far. In addition to the
-message string it is also required to pass a log level to when using this macro, but other
-than that `@logmsg` works the same. Here are some examples:
+Logging 模块是 Julia 自带的，提供了 [`@logmsg`](@ref Logging.@logmsg) 宏，它是目前为止提到的其他宏的泛化。使用此宏时除了消息字符串，它还要求传递一个日志级别，但除此之外，`@logmsg` 的工作原理是一样的，这是一些示例：
 
 ```@repl logmsg
 using Logging
@@ -91,8 +66,7 @@ using Logging
 @logmsg Logging.Error "Error message from @logmsg." x = [1, 2, 3]
 ```
 
-With the `@logmsg` macro it is also possible to create log messages with any level using
-the `LogLevel` constructor:
+`@logmsg` 宏也可以使用 `LogLevel` 构造函数创建任何级别的日志消息：
 
 ```@repl logmsg
 @logmsg Logging.LogLevel(123) "Log message with log level 123."
@@ -100,36 +74,25 @@ the `LogLevel` constructor:
 @logmsg Logging.LogLevel(2345) "Log message with log level 2345."
 ```
 
-From the coloring of the output we can deduce that log level 123 is a `Info`-message, log
-level 1234 is a `Warn`-message, and log level 2345 is a `Error`-message. You can also see
-this with the help of the table above: a log message with level `X` is a:
+从彩色输出我们可以推断出日志级别 123 是一个 `info` 消息，日志级别 1234 是一个 `Warn` 消息，日志级别 2345 是一个 `Error` 消息。你也可以在上表的帮助下看到这些：一个具有等级 `X` 的日志消息是一个：
  - debug message if `Logging.Debug <= X < Logging.Info`,
  - info message if `Logging.Info <= X < Logging.Warn`,
  - warn message if `Logging.Warn <= X < Logging.Error`,
  - error message if `Logging.Error <= X < Logging.AboveMaxLevel`.
 
-Custom log level like this is not very common, but sometimes it is handy with some more
-fine grained control.
+像这样自定义的日志级别不常见，但是有时它很方便，并且具有一些更细粒度的控制。
 
 
-### Location metadata
+### 位置元数据
 
-In the logging output above you see some other metadata attached to the message. In
-particular, the source module, the filename and line number of the log event is displayed.
-Since the code is running in the Julia REPL the module is `Main`, the "file" is `REPL[..]`
-and the line simply `1`. Every log event generated with the macros mentioned above gets
-assigned the following metadata:
- - the source module,
- - the source file,
- - the source line,
- - a log event id (unique to the location),
- - a log event group (the filename by default).
+在上面的日志输出中你看到一些其他元数据附加到消息。特别是，日志事件的来源模块，文件名和行号被打印。因为代码是在 Julia REPL 中运行的，模块是 `Main`，文件是 `REPL[..]`，行号为 `1`。每个上面提到的宏生成的日志事件都和以下元数据关联：
+ - 来源模块，
+ - 来源文件，
+ - 来源行号，
+ - 一个日志事件 id（位置独有的），
+ - 一个日志事件组（默认为文件名）。
 
-It is up to the log message backend to choose what to do with this information. For example,
-the default logger backend in the Julia REPL shows no metadata for `@info` messages, and
-only shows the module, file, and line for other messages. It is possible to override the
-default, for example to change the apparent source location. To do this you would pass
-keyword arguments to the log message macros:
+由日志后端选择如何处理此信息。例如，Julia REPL 中默认的记录器后端对于 `@info` 消息不显式元数据，对于其他消息仅显式模块，文件，和行号。也可以覆盖默认设置，例如改变来源位置。你需要传递关键字参数到日志消息宏来做到：
 
 ```@repl
 @warn "Overriding the source module" _module = Base
@@ -139,5 +102,4 @@ keyword arguments to the log message macros:
 @warn "Overriding the log event id" _id = :id
 ```
 
-Since the default logger backend only shows the module, file, and line the other overrides
-are not visible.
+因此默认的记录器后端仅显式模块，文件，和行号，其他的覆盖是不可见的。

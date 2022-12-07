@@ -1,13 +1,9 @@
-# How to log to a file
+# [如何记录日志到文件](@id How-to-log-to-a-file)
 
 !!! tip
-    It is a good idea to follow along by copy-pasting the code snippets into a Julia REPL!
+    跟随教程把代码片段复制粘贴到 Julia REPL 中执行，是个不错的注意！
 
-Instead of logging to the terminal it is quite common to send log messages to a log file.
-Both the [`ConsoleLogger`](@ref Logging.ConsoleLogger) and the
-[`SimpleLogger`](@ref Logging.SimpleLogger) from the `Logging` standard library accept an
-IO stream as input, so it is pretty easy to plug an open filestream in those loggers and log
-to a file. Here is an example:
+通常需要把日志消息发送到日志文件，而不是记录到终端。来自 `Logging` 标准库的 [`ConsoleLogger`](@ref Logging.ConsoleLogger) 和 [`SimpleLogger`](@ref Logging.SimpleLogger) 接收一个 IO 流作为输入，因此，在这些记录器中插入一个文件流并记录到文件是很简单的。这是一个示例：
 
 ```@example log-to-file
 using Logging
@@ -22,25 +18,16 @@ end
 close(io)
 ```
 
-When reading the file and printing the result we can verify that the file contains the
-expected log output:
+当读取文件并打印结果时，我们可以验证此文件包含预期的日志输入：
 
 ```@example
 print(read("logfile.txt", String))
 rm("logfile.txt") # hide
 ```
 
-With this approach you might notice that, due to
-[IO buffering](https://en.wikipedia.org/wiki/Data_buffer) the messages will be written to
-the file with a delay, or possibly not until the program ends and the file is closed.
-In addition it is somewhat annoying to manage the file IO stream yourself like in the
-example above. Because of these reasons it is often better to use a logger that are
-implemented specifically for file-writing.
+使用这种方法，您可能会注意到，由于 [IO buffering](https://en.wikipedia.org/wiki/Data_buffer)，消息将延迟写入文件，或者可能直到程序结束和文件关闭时才写入。此外，像上面的例子那样自己管理文件 IO 流有点烦人。由于这些原因，通常最好使用专门为文件写入而实现的记录器。
 
-The [LoggingExtras.jl](@ref) package provide the [`FileLogger`](@ref LoggingExtras.FileLogger),
-and, as the name suggest, this is implemented specifically for writing messages to a file.
-The `FileLogger` opens the file and automatically flushes the stream after handling each
-messages. Here is an example of using the `FileLogger`:
+[LoggingExtras.jl](@ref)包提供了 [`FileLogger`](@ref LoggingExtras.FileLogger), 顾名思义，这是专门为将消息写入文件而实现的。`FileLogger` 打开文件并在处理每条消息后自动刷新流。以下是 `FileLogger` 的使用示例：
 
 ```@example filelogger
 using Logging, LoggingExtras
@@ -51,19 +38,14 @@ with_logger(logger) do
     @info "First message to the FileLogger!"
 end
 ```
-
-Reading and printing the content:
+读取和打印内容：
 
 ```@example filelogger
 print(read("logfile.txt", String))
 ```
 
-By default, when the `FileLogger` opens the file stream it uses "write" mode (see
-documentation for [`open`](https://docs.julialang.org/en/v1/base/io-network/#Base.open)),
-which means that if the file exist and have some content this will be overwritten. There is
-an option to use "append" mode by passing `append = true` to the constructor. This will
-preserve content in the file and only append at the end. Here is an example of that where
-we open the same file from above, but use `append = true`:
+默认情况下，当 `FileLogger` 打开文件流时，使用 “write” 模式（请参阅文档 [`open`](https://docs.julialang.org/en/v1/base/io-network/#Base.open)），这意味着如果文件存在并且有一些内容，它将被覆盖。可以通过传递 `append = true` 给构造函数来使用“追加”模式。这将保留文件中的内容并且仅在末尾追加。这是一个示例，打开和上面相同的文件，但使用 `append = true`：
+
 
 ```@example filelogger
 
@@ -77,15 +59,9 @@ print(read("logfile.txt", String))
 rm("logfile.txt") # hide
 ```
 
-As you can see, the first message is still in the file, and we only appended a second one.
+如您所见，第一条消息仍在文件中，我们只附加了第二条。
 
-The `FileLogger` uses a [`SimpleLogger`](@ref Logging.SimpleLogger) internally, so the
-output formatting is the same as the `SimpleLogger`. If you want to control the output
-formatting you can use a [`FormatLogger`](@ref LoggingExtras.FormatLogger) (also from
-[LoggingExtras.jl](@ref)) instead. The `FormatLogger` accepts a formatting function as the
-first argument. The formatting function takes two arguments: (i) an IO stream to write the
-formatted message to and (ii) the logging arguments (see
-[`LoggingExtras.handle_message_args`](@ref)). Here is an example:
+在 `FileLogger` 内部使用了 [`SimpleLogger`](@ref Logging.SimpleLogger)，因此输出格式与`SimpleLogger`。 如果你想控制输出格式，你可以使用[`FormatLogger`](@ref LoggingExtras.FormatLogger)（也来自 [LoggingExtras.jl](@ref)）代替。`FormatLogger` 接受一个格式化函数作为第一个参数。格式化函数有两个参数：(i) 写入格式化消息的 IO 流和 (ii) 日志参数（参见 [`LoggingExtras.handle_message_args`](@ref)）。这是一个例子：
 
 ```@example formatlogger
 using Logging, LoggingExtras
@@ -104,11 +80,10 @@ print(read("logfile.txt", String))
 rm("logfile.txt") # hide
 ```
 
-With the `FormatLogger` we need to open the file stream manually with the preferred option
-(`"w"`, `"a"`, etc) but, just like the `FileLogger`, it flushes the stream after every
-message.
+`FormatLogger` 需要我们使用推荐选项（`"w"`, `"a"`, 等）手动打开文件流，就像 `FileLogger` 一样，它会在每条消息后刷新流。
 
-See also:
- - [Send messages to multiple locations](@ref) for how to send log messages to multiple
-   loggers, for example to a file *and* to the terminal.
- - [How to rotate log files](@ref) for more file logging options.
+也可以看看：
+
+  - [将消息发送到多个位置](@ref Send-messages-to-multiple-locations)，了解如何将日志消息发送到多个记录器，例如发送到文件和终端。
+  - [如何轮换日志文件](@ref How-to-rotate-log-files) 获取更多文件日志记录选项。
+

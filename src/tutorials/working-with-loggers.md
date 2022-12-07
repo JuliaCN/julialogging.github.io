@@ -1,37 +1,27 @@
-# Working with loggers
+# [使用日志记录器](@id Working-with-loggers)
 
 !!! tip
-    It is a good idea to follow along by copy-pasting the code snippets into a Julia REPL!
+    跟随教程把代码片段复制粘贴到 Julia REPL 中执行，是个不错的注意！
 
-In this tutorial we will learn how to work with loggers, i.e. the backends that receives
-and handles the log messages emitted by `@info` and friends (see [Logging basics](@ref)).
+在这篇教程中，我们将学习如何使用记录器，例如接收和处理 `@info` 及其朋友们（查看 [Logging 基本用法](@ref Logging-basics)）发出的日志消息的后端。
 
-The default logger in Julia is a [`ConsoleLogger`](@ref Logging.ConsoleLogger) that prints
-log messages to the terminal (specifically it prints to
-[`stderr`](https://docs.julialang.org/en/v1/base/io-network/#Base.stderr)).
+Julia 中的默认记录器是 [`ConsoleLogger`](@ref Logging.ConsoleLogger)，它打印日志消息到终端（具体来说，它打印到 [`stderr`](https://docs.julialang.org/en/v1/base/io-network/#Base.stderr)）。
 
 ```@repl
 @info "Hello default ConsoleLogger!"
 ```
 
-The `ConsoleLogger` is just one implementation of a logger backend but there are many other
-backends for various purposes, see for example the [Logging package overview](@ref). In this
-tutorial we will only try out the loggers that are defined in the [Logging.jl](@ref)
-standard library, but the functions for working with loggers are the same no matter which
-logger implementation you use.
+`ConsoleLogger` 只是记录器后端的其中一个实现，还有很多不同目的的其他实现，请查看 [Logging 包概述](@ref Logging—package-overview)。在此教程中，我们仅尝试 [Logging.jl](@ref) 标准库中定义的记录器，但是无论你使用那种记录器实现，使用记录器的函数都是相同的。
 
-The [`global_logger`](@ref Logging.global_logger) function can be used to get or set the
-*global logger*:
+[`global_logger`](@ref Logging.global_logger) 函数用于获取或设置 *全局记录器*：
+
 ```@repl
 using Logging
 global_logger() = current_logger() # hide
 global_logger() |> typeof
 ```
 
-The current global logger is inherited by any spawned tasks so if you want to set a custom
-logger for your program it is usually enough to update the global logger. Here is an
-example of how to set the global logger to a [`NullLogger`](@ref Logging.NullLogger) to
-silence all log messages:
+当前的全局记录器会被任何衍生任务继承，因此，如果你想要为你的程序设置一个自定义的记录器，通常更新全局记录器就足够了。这里是一个如何设置全局记录器为 [`NullLogger`](@ref Logging.NullLogger) 以禁言所有日志消息的示例：
 
 ```@repl
 using Logging
@@ -44,13 +34,9 @@ global_logger(old_logger); # reset to the old logger
 @info "This message goes to the old logger again!"
 ```
 
-As you can see in the example, the `global_logger` function returns the old logger when a
-new one is set and we then reset the global logger to the old one. For a program/application
-this is usually all you need -- you construct a logger, or a combination of loggers, and
-set the global logger to this one.
+正如你在此例中看到的，当设置一个新记录器时，`global_logger` 函数会返回旧记录器，然后我们重新设置全局记录器为旧记录器。对于一个程序/应用，这通常是你需要的一切--构造一个记录器或一个记录器组合，然后把它设置为全局记录器。
 
-With the [`with_logger`](@ref Logging.with_logger) function it is possible to change the
-logger for a specific task.
+[`with_logger`](@ref Logging.with_logger) 函数可以为一个特定任务修改记录器。
 
 ```@repl
 using Logging
@@ -61,5 +47,4 @@ end
 @info "Now the logger is back to normal."
 ```
 
-As you can see, after the call to `with_logger` the logger state is unchanged and the
-log message is displayed as usual.
+如你所见，在调用 `with_logger` 之后，记录器的状态未改变，日志消息如之前一样打印。
