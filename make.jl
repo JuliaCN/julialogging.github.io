@@ -96,6 +96,6 @@ withenv(env...) do
     deploydocs(
         versions = nothing,
         push_preview = true,
-        repo = "github.com/ioxera/julialogging.github.io.git",
+        repo = "github.com/JuliaCN/julialogging.github.io.git",
     )
 end
