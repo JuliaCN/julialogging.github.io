@@ -31,7 +31,7 @@ LoggingExtras 包提供了一些 Logging 标准库的必要扩展。例如用于
 [`MinLevelLogger`](@ref LoggingExtras.MinLevelLogger),
 [`EarlyFilteredLogger`](@ref LoggingExtras.EarlyFilteredLogger),
 [`ActiveFilteredLogger`](@ref LoggingExtras.ActiveFilteredLogger);用于任意消息转换的
- [`TransformerLogger`](@ref LoggingExtras.TransformerLogger);用于消息路由的 [`TeeLogger`](@ref LoggingExtras.TeeLogger); 以及三个不同的记录器槽:用于记录到磁盘文件的 [`FileLogger`](@ref LoggingExtras.FileLogger),用于自定义日志输出格式的 [`FormatLogger`](@ref LoggingExtras.FormatLogger), 以及用于根据日期轮换记录到磁盘文件的
+ [`TransformerLogger`](@ref LoggingExtras.TransformerLogger);用于消息路由的 [`TeeLogger`](@ref LoggingExtras.TeeLogger); 以及三个不同的记录器接收器(logger sink):用于记录到磁盘文件的 [`FileLogger`](@ref LoggingExtras.FileLogger),用于自定义日志输出格式的 [`FormatLogger`](@ref LoggingExtras.FormatLogger), 以及用于根据日期轮换记录到磁盘文件的
 [`DatetimeRotatingFileLogger`](@ref LoggingExtras.DatetimeRotatingFileLogger)。
 
 LoggingExtras 的功能被用于大部分的 How-to 指南，因此，请参考这些示例。

@@ -3,7 +3,7 @@
 在此教程中，我们将会经历实现一个新记录器的必需步骤。这包括定义一个新的结构体，它是 `Logging.AbstractLogger` 的子类型，并且为此记录器接口实现必需的方法。
 
 !!! note
-    通常，除非你要实现一个新的记录器槽（logger sink)，否则不需要定义新的记录器来获取你想要的行为。[LoggingExtras.jl](@ref) 包提供了任意路由，转换，和过滤日志事件的记录器。例如，在此示例中实现的记录器使用 [`TransformerLogger`](@ref LoggingExtras.TransformerLogger) 实现起来很简单（请参阅[本页的最后一部分](@ref cipher-existing)）。
+    通常，除非你要实现一个新的记录器接收器（logger sink)，否则不需要定义新的记录器来获取你想要的行为。[LoggingExtras.jl](@ref) 包提供了任意路由，转换，和过滤日志事件的记录器。例如，在此示例中实现的记录器使用 [`TransformerLogger`](@ref LoggingExtras.TransformerLogger) 实现起来很简单（请参阅[本页的最后一部分](@ref cipher-existing)）。
 
 作为一个玩具示例，我们将实现一个加密记录器--一个使用 [Caesar cipher](https://en.wikipedia.org/wiki/Caesar_cipher)） 来“加密”消息的记录器。我们想要记录器接收任何日志事件，并且可以使用输出流进行配置。开始吧！
 
@@ -130,7 +130,7 @@ julia> @info "hello, $name"
 
 ### [使用已存在的功能构建 `CipherLogger`](@id cipher-existing)
 
-如本页开头所示，除非你想要对接一个新类型的记录器槽，通常无需实现自己的记录器。相反，最好是组合现有的日志记录器以实现路由、转换、和过滤日志事件。上面的 `CipherLogger` 可以像下面这样使用来自 [LoggingExtras.jl](@ref) 包的 [`TransformerLogger`](@ref LoggingExtras.TransformerLogger) 轻而易举地实现：
+如本页开头所示，除非你想要对接一个新类型的记录器接收器（logger sink)，通常无需实现自己的记录器。相反，最好是组合现有的日志记录器以实现路由、转换、和过滤日志事件。上面的 `CipherLogger` 可以像下面这样使用来自 [LoggingExtras.jl](@ref) 包的 [`TransformerLogger`](@ref LoggingExtras.TransformerLogger) 轻而易举地实现：
 
 ```julia
 using Logging, LoggingExtras
